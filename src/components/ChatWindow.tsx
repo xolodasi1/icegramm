@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, MoreVertical, Phone, Video, Smile, Check, CheckCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { ScrollArea } from './ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Chat, Message } from '@/types';
 import { motion, AnimatePresence } from 'motion/react';
 import { currentUser } from '@/mockData';
