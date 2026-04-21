@@ -1,4 +1,4 @@
-import { Chat, User, Message } from '@/types';
+import { Chat, User, Message } from './types';
 
 export const currentUser: User = {
   id: 'me',
