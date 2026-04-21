@@ -11,8 +11,8 @@ import {
   getDocs,
   limit
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { Chat, Message, User } from '../types';
+import { db } from '@/lib/firebase';
+import { Chat, Message, User } from '@/types';
 
 export const getMyChats = (userId: string, callback: (chats: Chat[]) => void) => {
   const q = query(
