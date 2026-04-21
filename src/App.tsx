@@ -5,7 +5,7 @@ import { ChatWindow } from '@/components/ChatWindow';
 import { mockChats } from '@/mockData';
 import { FirebaseProvider, useAuth } from '@/lib/FirebaseProvider';
 import { signInWithGoogle } from '@/lib/firebase';
-import { Button } from './components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Loader2, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 
