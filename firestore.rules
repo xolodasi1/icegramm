@@ -1,0 +1,118 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // -------------------------------------------------------------------------
+    // GLOBAL HELPERS
+    // -------------------------------------------------------------------------
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isEmailVerified() {
+      return request.auth.token.email_verified == true;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // -------------------------------------------------------------------------
+    // ENTITY VALIDATION
+    // -------------------------------------------------------------------------
+
+    function isValidUser(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 50
+          && data.email is string && data.email == request.auth.token.email
+          && data.status in ['online', 'offline', 'away']
+          && (data.get('avatar', '') is string && data.get('avatar', '').size() <= 500);
+    }
+
+    function isValidChat(data) {
+      return data.type in ['private', 'group']
+          && data.participants is list
+          && data.participants.size() >= 2
+          && data.participants.size() <= 100
+          && request.auth.uid in data.participants
+          && data.updatedAt == request.time;
+    }
+
+    function isValidMessage(data) {
+      return data.senderId == request.auth.uid
+          && data.text is string && data.text.size() > 0 && data.text.size() <= 4096
+          && data.timestamp == request.time
+          && data.status in ['sent', 'delivered', 'read'];
+    }
+
+    function isChatParticipant(chatId) {
+      return isSignedIn() && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+    }
+
+    // -------------------------------------------------------------------------
+    // RULES
+    // -------------------------------------------------------------------------
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && resource.data.status == 'online'; // Narrow query support
+      
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) 
+          && isValidUser(incoming())
+          && (incoming().diff(existing()).affectedKeys().hasOnly(['name', 'avatar', 'status', 'lastSeen']));
+    }
+
+    // Chats Collection
+    match /chats/{chatId} {
+      allow get: if isSignedIn() && request.auth.uid in resource.data.participants;
+      allow list: if isSignedIn() && resource.data.participants.hasAny([request.auth.uid]);
+      
+      allow create: if isSignedIn() && isValidId(chatId) && isValidChat(incoming());
+      allow update: if isSignedIn() 
+          && request.auth.uid in existing().participants
+          && (
+            // Update lastMessage or unreadCounts
+            (incoming().diff(existing()).affectedKeys().hasOnly(['lastMessage', 'unreadCounts', 'updatedAt']) && incoming().updatedAt == request.time)
+            ||
+            // Join/Leave group
+            (existing().type == 'group' && incoming().diff(existing()).affectedKeys().hasOnly(['participants', 'updatedAt']))
+          );
+    }
+
+    // Messages Subcollection
+    match /chats/{chatId}/messages/{messageId} {
+      allow list, get: if isChatParticipant(chatId);
+      
+      allow create: if isChatParticipant(chatId) 
+          && isValidId(messageId)
+          && isValidMessage(incoming());
+          
+      allow update: if isChatParticipant(chatId)
+          && (
+            // Recipient marks as read
+            (incoming().senderId == existing().senderId && incoming().text == existing().text && incoming().diff(existing()).affectedKeys().hasOnly(['status']))
+          );
+          
+      allow delete: if isChatParticipant(chatId) && existing().senderId == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "ColdChat",
+  "description": "A high-performance Telegram clone with a crisp, cold aesthetic, featuring real-time messaging and a minimal interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

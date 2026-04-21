@@ -1,0 +1,70 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System profile for a user",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Display name" },
+        "avatar": { "type": "string", "description": "URL to image" },
+        "status": { "type": "string", "enum": ["online", "offline", "away"] },
+        "lastSeen": { "type": "integer", "format": "int64" },
+        "email": { "type": "string", "format": "email" }
+      },
+      "required": ["name", "email", "status"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "Messaging thread between users",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["private", "group"] },
+        "participants": { 
+          "type": "array", 
+          "items": { "type": "string" },
+          "description": "List of user IDs"
+        },
+        "lastMessage": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string" },
+            "senderId": { "type": "string" },
+            "timestamp": { "type": "integer", "format": "int64" }
+          }
+        },
+        "unreadCounts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "updatedAt": { "type": "integer", "format": "int64" }
+      },
+      "required": ["type", "participants", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "An individual message in a chat",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "integer", "format": "int64" },
+        "status": { "type": "string", "enum": ["sent", "delivered", "read"] }
+      },
+      "required": ["senderId", "text", "timestamp", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Public and private user profile data"
+    },
+    "/chats/{chatId}": {
+      "schema": "Chat",
+      "description": "Chat thread metadata"
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages within a chat thread"
+    }
+  }
+}
