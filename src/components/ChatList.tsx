@@ -1,10 +1,10 @@
 import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input.tsx';
-import { ScrollArea } from '@/components/ui/scroll-area.tsx';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
-import { Badge } from '@/components/ui/badge.tsx';
-import { Chat } from '@/types';
-import { cn } from '@/lib/utils';
+import { Input } from './ui/input';
+import { ScrollArea } from './ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Badge } from './ui/badge';
+import { Chat } from '../types';
+import { cn } from '../lib/utils';
 
 interface ChatListProps {
   chats: Chat[];

@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, MoreVertical, Phone, Video, Smile, Check, CheckCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button.tsx';
-import { Input } from '@/components/ui/input.tsx';
-import { ScrollArea } from '@/components/ui/scroll-area.tsx';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
-import { Chat, Message } from '@/types';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { ScrollArea } from './ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Chat, Message } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { currentUser } from '@/mockData';
+import { currentUser } from '../mockData';
 
 interface ChatWindowProps {
   chat: Chat;
