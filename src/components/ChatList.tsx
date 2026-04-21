@@ -1,8 +1,8 @@
 import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input.tsx';
+import { ScrollArea } from '@/components/ui/scroll-area.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
 import { Chat } from '@/types';
 import { cn } from '@/lib/utils';
 
