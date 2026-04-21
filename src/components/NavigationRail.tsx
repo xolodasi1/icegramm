@@ -1,6 +1,6 @@
 import { Home, MessageCircle, Settings, User, Bell, Menu } from 'lucide-react';
-import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function NavigationRail() {
   return (
